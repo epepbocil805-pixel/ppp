@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Florist untuk Theresa</title>
+    <style>
+        :root {
+            --primary-color: #d4a373;
+            --secondary-color: #faedcd;
+            --dark-color: #606c38;
+            --accent-color: #e63946;
+            --bg-light: #fefae0;
+            --text-dark: #283618;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent; /* Menghilangkan efek biru saat diklik di HP */
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #faedcd 0%, #fefae0 100%);
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        header h1 {
+            font-family: 'Georgia', serif;
+            color: var(--text-dark);
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: #7f8c8d;
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            padding: 20px;
+        }
+
+        /* Sistem Halaman Berbasis Klik HP */
+        .page {
+            display: block;
+        }
+
+        #surprise-page {
+            display: none; /* Sembunyikan halaman kejutan di awal */
+        }
+
+        /* Trigger ketika tombol diklik */
+        #page-trigger:checked ~ #shop-page {
+            display: none;
+        }
+
+        #page-trigger:checked ~ #surprise-page {
+            display: block;
+            animation: fadeIn 0.8s ease;
+        }
+
+        #page-trigger {
+            display: none; /* Sembunyikan checkbox aslinya */
+        }
+
+        .bouquet-display {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border: 2px dashed var(--primary-color);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .bouquet-display h2 {
+            font-family: 'Georgia', serif;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            color: var(--text-dark);
+        }
+
+        .bouquet-slots {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            padding: 15px 0;
+        }
+
+        .bouquet-item {
+            background: var(--secondary-color);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* Tombol Khusus HP */
+        .btn-click-me {
+            display: block;
+            background: var(--dark-color);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 30px;
+            width: 100%;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-align: center;
+            cursor: pointer;
+            margin-top: 25px;
+            box-shadow: 0 6px 15px rgba(96, 108, 56, 0.3);
+            transition: transform 0.1s ease;
+        }
+
+        .btn-click-me:active {
+            transform: scale(0.98); /* Efek membal saat ditekan jari */
+        }
+
+        #surprise-section {
+            width: 100%;
+            background: linear-gradient(135deg, #4a2c2a 0%, #6e473b 100%);
+            color: #fff;
+            padding: 30px 15px;
+            border-radius: 20px;
+            box-sizing: border-box;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .surprise-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .photo-gallery-frame {
+            background: #2b1810;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6), inset 0 0 20px rgba(0,0,0,0.8);
+            border: 8px solid #d4a373;
+            width: 100%;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2 Kolom pas untuk layar HP */
+            gap: 12px;
+        }
+
+        .gallery-item {
+            background: #fff;
+            padding: 6px 6px 20px 6px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            border-radius: 2px;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border: 1px solid #ddd;
+        }
+
+        .letter-paper {
+            background: #fdfaf2;
+            color: #2c1d11;
+            padding: 25px;
+            border-radius: 4px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            width: 100%;
+            font-family: 'Georgia', serif;
+            line-height: 1.7;
+            position: relative;
+            background-image: radial-gradient(#ece4d8 1px, transparent 0);
+            background-size: 24px 24px;
+            border-left: 5px solid #d4a373;
+        }
+
+        .letter-header {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            border-bottom: 1px dashed #d4a373;
+            padding-bottom: 8px;
+        }
+
+        .letter-body {
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+            white-space: pre-line;
+            text-align: justify;
+        }
+
+        .letter-footer {
+            text-align: right;
+            font-style: italic;
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+
+        .love-signature {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.6rem;
+            color: #ff4d6d;
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 77, 109, 0.4);
+            letter-spacing: 1px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>💐 De' Amor & Theresa Flower Boutique</h1>
+        <p>Buket bunga spesial yang dirangkai tulus dari lubuk hati</p>
+    </header>
+
+    <div class="container">
+        
+        <!-- Checkbox pengendali halaman alternatif JavaScript -->
+        <input type="checkbox" id="page-trigger">
+
+        <!-- HALAMAN 1: Tampilan Buket Bunga -->
+        <div id="shop-page" class="page">
+            <div class="bouquet-display">
+                <h2>Buket Bunga Pilihan Untukmu:</h2>
+                <div class="bouquet-slots">
+                    <div class="bouquet-item">🪷 Lily Putih</div>
+                    <div class="bouquet-item">🌹 Mawar Merah</div>
+                    <div class="bouquet-item">🪻 Babys Breath</div>
+                    <div class="bouquet-item">🌸 Mawar Merah Muda</div>
+                    <div class="bouquet-item">🌷 Tulip Putih</div>
+                </div>
+            </div>
+            
+            <!-- Tombol bungkus yang memicu efek klik pindah halaman di HP -->
+            <label for="page-trigger" class="btn-click-me" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">
+                🎁 Selesaikan & Buka Hadiah
+            </label>
+        </div>
+
+        <!-- HALAMAN 2: Surat & Galeri Foto Kenangan -->
+        <div id="surprise-page" class="page">
+            <div id="surprise-section">
+                <div class="surprise-container">
+                    
+                    <div class="photo-gallery-frame">
+                        <h3 style="font-family: 'Georgia', serif; text-align: center; margin-bottom: 15px; color: #faedcd; font-size: 1.1rem;">✨ Lembaran Kenangan Kita ✨</h3>
+                        <div class="gallery-grid" id="gallery-grid"></div>
+                    </div>
+
+                    <div class="letter-paper">
+                        <div class="letter-header">Untuk: Theresa</div>
+                        <div class="letter-body">
+                            Theresa,
+
+                            Lewat buket bunga ini, aku ingin menyampaikan apa yang selama ini mengganjal di dalam lubuk hatiku yang paling dalam. Aku tahu kata maaf saja tidak akan pernah cukup untuk menyembuhkan luka atau memperbaiki kekecewaan yang telah kubuat padamu. Aku benar-benar menyesal karena telah mengecewakanmu, seseorang yang begitu tulus dan berarti di hidupku.
+
+                            Setiap kuntum bunga dalam buket ini melambangkan penyesalanku, keindahan hatimu, dan kenangan indah saat kita bersama yang selalu aku simpan rapi. Khususnya bunga Lily Putih ini, ia melambangkan ketulusan cintaku dan permohonan maafku yang paling suci kepadamu. 
+
+                            Aku sadar aku egois dan tidak sempurna, tapi tolong ketahuilah bahwa kebahagiaanmu adalah hal yang paling penting bagiku. Aku berjanji akan belajar menjadi orang yang lebih baik lagi dan tidak akan mengulangi kesalahan yang membuat senyum di wajahmu pudar. Maukah kamu memaafkanku dan memberi kita satu kesempatan lagi?
+                        </div>
+                        <div class="letter-footer">
+                            Dengan tulus,<br>
+                            <span style="font-size: 1.1rem; color: var(--primary-color);">Damar</span>
+                        </div>
+                    </div>
+
+                    <div class="love-signature">I LOVE THERESA 3000 ❤️</div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+        // Memuat foto otomatis secara instan ke dalam 2 kolom grid HP
+        const userImages = [
+            '54911.jpg', '54910.jpg', '56233.jpg', '56236.jpg', '56243.jpg',
+            '50260.jpg', '53078.jpg', '53005.jpg', '52976.jpg', '53010.jpg'
+        ];
+
+        const galleryGrid = document.getElementById('gallery-grid');
+        const rotations = ['-3deg', '2deg', '-2deg', '3deg', '-1deg', '2deg', '-3deg', '1deg', '-2deg', '3deg'];
+        
+        galleryGrid.innerHTML = userImages.map((imgUrl, i) => `
+            <div class="gallery-item" style="transform: rotate(${rotations[i % rotations.length]})">
+                <img src="${imgUrl}" alt="Kenangan Theresa & Damar">
+            </div>
+        `).join('');
+    </script>
+</body>
+</html>
+
